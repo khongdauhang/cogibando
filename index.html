@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Có Gì Bán Đó - Cửa hàng trực tuyến</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* --- TỔNG THỂ --- */
+body { margin:0; font-family:'Poppins',sans-serif; background-color: #f4f7f6; color: #333; }
+
+header { 
+    padding: 15px 20px; background: #ffffff; display: flex; justify-content: space-between; 
+    align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+}
+header h1 { margin:0; color: #00acc1; font-size: 24px; cursor: pointer; }
+
+nav { display: flex; align-items: center; gap: 20px; }
+nav a { text-decoration: none; color: #333; font-weight: 500; }
+.cart-icon-btn { position: relative; cursor: pointer; }
+.cart-badge { 
+    position: absolute; top: -8px; right: -8px; background: #ff5252; color: white; 
+    font-size: 12px; padding: 2px 6px; border-radius: 50%; font-weight: bold; 
+}
+
+.container { max-width: 1200px; margin: auto; padding: 30px; }
+.products { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
+
+/* --- PRODUCT CARD --- */
+.product { 
+    background: #ffffff; border-radius: 15px; padding: 20px; text-align: center; 
+    transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #eee; 
+}
+.product:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+.img-box { height: 200px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; border-radius: 10px; background: #f9f9f9; }
+.product img { max-width: 90%; max-height: 90%; object-fit: contain; }
+.product h3 { font-size: 15px; margin: 15px 0 5px; min-height: 45px; color: #444; }
+.product p { color: #ff5252; font-weight: 700; font-size: 18px; margin-bottom: 15px; }
+.product button { padding: 12px; border: none; border-radius: 10px; background: #00acc1; color: white; cursor: pointer; font-weight: 600; }
+
+/* --- TRANG CHI TIẾT (DETAIL) --- */
+#detailPage, #cartPage, #checkoutPage { 
+    position: fixed; inset: 0; background: #f4f7f6; color: #333; 
+    display: none; overflow: auto; z-index: 9999; 
+}
+.page-header { background: #fff; padding: 15px 30px; display: flex; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; }
+.back-btn { cursor: pointer; color: #00acc1; font-weight: 600; }
+
+.detail-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+.detail-box { display: flex; gap: 40px; align-items: flex-start; background: #fff; padding: 20px; flex-wrap: wrap; border-radius: 20px; }
+.image-section { flex: 1.2; min-width: 300px; }
+#dImg { width: 100%; height: 400px; object-fit: contain; border: 1px solid #eee; border-radius: 15px; }
+.thumb-list { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+.thumb-list img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 2px solid #eee; cursor: pointer; }
+.thumb-list img.active { border-color: #ff5252; }
+
+.info-section { flex: 1; min-width: 300px; }
+.price-box { font-size: 28px; color: #ff5252; font-weight: 700; margin: 15px 0 5px 0; }
+
+.trust-info { background: #f0fbfc; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #00acc1; font-size: 13px; color: #444; }
+.trust-info p { margin: 5px 0; display: flex; align-items: center; gap: 8px; }
+
+.color-group { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.color-item { padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; background: #fff; }
+.color-item.selected { border-color: #ff5252; color: #ff5252; background: #fff5f5; font-weight: bold; }
+.qty-box { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+.qty-box button { width: 35px; height: 35px; border: 1px solid #ddd; cursor: pointer; }
+
+/* --- GIỎ HÀNG & THANH TOÁN --- */
+.cart-container, .checkout-container { max-width: 800px; margin: 30px auto; padding-bottom: 150px; }
+.cart-item { background: #fff; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+.cart-item img { width: 60px; height: 60px; object-fit: cover; }
+.input-group input, .input-group textarea { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+.cart-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 20px 40px; border-top: 2px solid #00acc1; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); }
+.btn-main { background: #00acc1; color: #fff; padding: 15px 30px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+
+.contact-info { margin-top: 60px; padding: 40px; background: #fff; border-radius: 20px; text-align: center; border: 1px solid #eee; }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1 onclick="location.reload()">Có Gì Bán Đó</h1>
+    <nav>
+      <a href="#">Trang chủ</a>
+      <div class="cart-icon-btn" onclick="openCartPage()">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#00acc1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </div>
+    </nav>
+</header>
+
+<div class="container">
+  <h2>Sản phẩm mới nhất</h2>
+  <div class="products" id="productGrid"></div>
+
+  <div class="contact-info">
+    <h2>Thông Tin Liên Hệ</h2>
+    <p>📞 Hotline / Zalo: <strong>036 797 4619</strong></p>
+    <p>🏠 Địa chỉ: Thành phố Hồ Chí Minh, Việt Nam</p>
+  </div>
+</div>
+
+<div id="detailPage">
+    <div class="page-header"><div class="back-btn" onclick="closePage('detailPage')">← QUAY LẠI</div></div>
+    <div class="detail-container">
+        <div class="detail-box">
+            <div class="image-section">
+                <img id="dImg">
+                <div id="thumbList" class="thumb-list"></div>
+            </div>
+            <div class="info-section">
+                <h2 id="dName"></h2>
+                <div class="price-box" id="dPrice"></div>
+                
+                <div class="trust-info">
+                    <p>🚚 Phí vận chuyển: <b>30.000đ</b></p>
+                    <p>🎉 <b>Miễn phí ship</b> cho đơn hàng từ <b>150.000đ</b></p>
+                    <p>✅ Được <b>kiểm tra hàng</b> trước khi thanh toán</p>
+                </div>
+
+                <p><b>Chọn phân loại:</b></p>
+                <div id="colorGroup" class="color-group"></div>
+                <p><b>Số lượng:</b></p>
+                <div class="qty-box">
+                    <button onclick="changeQty(-1)">-</button>
+                    <b id="qty">1</b>
+                    <button onclick="changeQty(1)">+</button>
+                </div>
+                <button class="btn-main" onclick="addDetailCart()" style="width:100%">THÊM VÀO GIỎ HÀNG</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="cartPage">
+    <div class="page-header"><div class="back-btn" onclick="closePage('cartPage')">← MUA TIẾP</div></div>
+    <div class="cart-container">
+        <h2 style="text-align:center">Giỏ hàng của bạn</h2>
+        <div id="cartList"></div>
+    </div>
+    <div class="cart-footer">
+        <div><span id="totalPrice" style="font-size:24px; font-weight:800; color:#ff5252">0đ</span></div>
+        <button class="btn-main" onclick="openCheckoutPage()">THANH TOÁN</button>
+    </div>
+</div>
+
+<div id="checkoutPage">
+    <div class="page-header"><div class="back-btn" onclick="closePage('checkoutPage')">← QUAY LẠI</div></div>
+    <div class="checkout-container">
+        <h2>Xác nhận đơn hàng</h2>
+        <div id="checkoutItems" style="background:#fff; padding:15px; border-radius:12px;"></div>
+        <div id="shipSummary" style="margin-top:15px; padding:15px; background:#fff; border-radius:12px; font-size:14px;"></div>
+
+        <div class="input-group" style="background:#fff; padding:20px; border-radius:15px; margin-top:20px;">
+            <h3>Thông tin giao hàng</h3>
+            <input type="text" id="cusName" placeholder="Họ và tên">
+            <input type="text" id="cusPhone" placeholder="Số điện thoại">
+            <textarea id="cusAddress" placeholder="Địa chỉ giao hàng đầy đủ"></textarea>
+            <p>Phương thức thanh toán:</p>
+            <select id="payMethod" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                <option value="Tiền mặt (COD)">Tiền mặt (COD) - Kiểm hàng khi nhận</option>
+                <option value="Chuyển khoản">Chuyển khoản / QR</option>
+            </select>
+        </div>
+    </div>
+    <div class="cart-footer">
+        <div><span id="checkoutTotal" style="font-size:24px; font-weight:800; color:#ff5252">0đ</span></div>
+        <button class="btn-main" style="background:#ff5252" onclick="confirmOrder()">XÁC NHẬN QUA ZALO</button>
+    </div>
+</div>
+
+<script>
+const products = [
+    { name: 'Bàn học gấp gọn mini', price: 120000, variants: [{color:'Vân Gỗ', img:'hinhban1.jpg'}, {color:'Trắng', img:'hinhban2.jpg'}, {color:'Đen', img:'hinhban3.jpg'}] },
+    { name: 'Kệ bếp đa năng cao cấp', isVariablePrice: true, variants: [
+        {color:'2 Tầng', img:'hinhkebep.jpg', price: 45000}, 
+        {color:'3 Tầng', img:'hinhkebep1.jpg', price: 55000}, 
+        {color:'4 Tầng', img:'hinhkebep2.jpg', price: 65000}
+    ] },
+    { name: 'Nồi Inox Cao Cấp 2 Quai 18cm', price: 185000, variants: [{color:'Bạc Inox', img:'hinhnoi.jpg'}] },
+    { name: 'Nồi cơm điện Sunhouse 1.8L', price: 800000, variants: [{color:'Đỏ Trắng', img:'hinhnoicom.jpg'}, {color:'Góc khác', img:'hinhnoicom1.jpg'}] },
+    { name: '[ Chai 1L ] Dầu ăn Simply, Neptune', price: 90000, variants: [{color:'Simply Đậu Nành', img:'hinhchaidau.jpg'}, {color:'Simply Gạo Lứt', img:'hinhchaidau1.jpg'}, {color:'Neptune Light', img:'hinhchaidau2.jpg'}] },
+    { name: 'Bộ 4 muỗng canh, muỗng vớt, xẻng lật', price: 140000, variants: [{color:'Inox Cao Cấp', img:'hinhdungcubep.jpg'}] }
+];
+
+let cart = [];
+let currentProduct = {};
+let selectedVariant = null;
+
+const productGrid = document.getElementById('productGrid');
+products.forEach(p => {
+    // SỬA TẠI ĐÂY: Không hiển thị dấu cộng nữa
+    let displayPrice = p.isVariablePrice ? p.variants[0].price : p.price;
+    productGrid.innerHTML += `
+        <div class="product">
+            <div class="img-box" onclick="openDetail('${p.name}', ${displayPrice}, ${JSON.stringify(p.variants).replace(/"/g, '&quot;')}, ${p.isVariablePrice || false})">
+                <img src="${p.variants[0].img}">
+            </div>
+            <h3>${p.name}</h3>
+            <p>${displayPrice.toLocaleString()}đ</p>
+            <button onclick="openDetail('${p.name}', ${displayPrice}, ${JSON.stringify(p.variants).replace(/"/g, '&quot;')}, ${p.isVariablePrice || false})">Xem chi tiết</button>
+        </div>`;
+});
+
+function openDetail(name, price, variants, isVariablePrice) {
+    currentProduct = { name, price, variants, isVariablePrice };
+    dName.innerText = name;
+    qty.innerText = 1;
+    colorGroup.innerHTML = "";
+    thumbList.innerHTML = "";
+    variants.forEach((v, i) => {
+        colorGroup.innerHTML += `<div class="color-item" id="color-${i}" onclick="selectVariant(${i})">${v.color}</div>`;
+        thumbList.innerHTML += `<img src="${v.img}" id="thumb-${i}" onclick="selectVariant(${i})">`;
+    });
+    selectVariant(0);
+    document.getElementById('detailPage').style.display = "block";
+}
+
+function selectVariant(i) {
+    selectedVariant = currentProduct.variants[i];
+    if(currentProduct.isVariablePrice) {
+        currentProduct.price = selectedVariant.price;
+    }
+    dPrice.innerText = currentProduct.price.toLocaleString() + "đ";
+    dImg.src = selectedVariant.img;
+    document.querySelectorAll('.color-item').forEach(el => el.classList.remove('selected'));
+    document.getElementById(`color-${i}`).classList.add('selected');
+    document.querySelectorAll('.thumb-list img').forEach(el => el.classList.remove('active'));
+    document.getElementById(`thumb-${i}`).classList.add('active');
+}
+
+function changeQty(n) { let q = parseInt(qty.innerText); if(q+n >= 1) qty.innerText = q+n; }
+
+function addCart(name, price, quantity, color, image) {
+    cart.push({ name, price, quantity, color, image });
+    updateCartUI();
+    alert("Đã thêm vào giỏ hàng!");
+}
+
+function addDetailCart() {
+    addCart(currentProduct.name, currentProduct.price, parseInt(qty.innerText), selectedVariant.color, selectedVariant.img);
+    closePage('detailPage');
+}
+
+function updateCartUI() {
+    cartBadge.innerText = cart.length;
+    let html = "", subtotal = 0;
+    cart.forEach((item, i) => {
+        subtotal += (item.price * item.quantity);
+        html += `<div class="cart-item">
+            <img src="${item.image}">
+            <div style="flex:1"><h4>${item.name}</h4><small>${item.color} x ${item.quantity}</small></div>
+            <b>${(item.price*item.quantity).toLocaleString()}đ</b>
+            <button onclick="removeItem(${i})" style="border:none; color:red; background:none; cursor:pointer;">Xóa</button>
+        </div>`;
+    });
+    cartList.innerHTML = html || "<p style='text-align:center'>Giỏ hàng trống</p>";
+    totalPrice.innerText = subtotal.toLocaleString() + "đ";
+    return subtotal;
+}
+
+function openCartPage() { updateCartUI(); document.getElementById('cartPage').style.display = "block"; }
+
+function openCheckoutPage() {
+    if(cart.length === 0) return alert("Giỏ hàng của bạn đang trống!");
+    let subtotal = updateCartUI();
+    let shipFee = subtotal >= 150000 ? 0 : 30000;
+    let finalTotal = subtotal + shipFee;
+    checkoutTotal.innerText = finalTotal.toLocaleString() + "đ";
+    let h = ""; cart.forEach(i => h += `<p style="font-size:13px; margin:5px 0;">• ${i.name} [${i.color}] x${i.quantity}</p>`);
+    checkoutItems.innerHTML = h;
+    shipSummary.innerHTML = `
+        <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>Tiền hàng:</span> <span>${subtotal.toLocaleString()}đ</span></div>
+        <div style="display:flex; justify-content:space-between; color:${shipFee===0?'green':'#333'}">
+            <span>Phí vận chuyển:</span> 
+            <span>${shipFee === 0 ? 'MIỄN PHÍ' : '30.000đ'}</span>
+        </div>
+        ${shipFee > 0 ? `<p style="font-size:12px; color:orange; margin-top:5px;">(Mua thêm ${(150000 - subtotal).toLocaleString()}đ để được Freeship)</p>` : ''}
+    `;
+    document.getElementById('checkoutPage').style.display = "block";
+}
+
+function removeItem(i) { cart.splice(i, 1); updateCartUI(); }
+function closePage(id) { document.getElementById(id).style.display = "none"; }
+
+function confirmOrder() {
+    const name = document.getElementById('cusName').value;
+    const phone = document.getElementById('cusPhone').value;
+    const address = document.getElementById('cusAddress').value;
+    const method = document.getElementById('payMethod').value;
+    if(!name || !phone || !address) return alert("Vui lòng điền đầy đủ thông tin nhận hàng!");
+    let subtotal = 0;
+    let detail = ""; 
+    cart.forEach((i, idx) => {
+        subtotal += (i.price * i.quantity);
+        detail += `${idx+1}. ${i.name} [${i.color}] x${i.quantity}\n`;
+    });
+    let shipFee = subtotal >= 150000 ? 0 : 30000;
+    let total = subtotal + shipFee;
+    const msg = `ĐƠN HÀNG MỚI TỪ WEBSITE:\n👤 Khách hàng: ${name}\n📞 Số điện thoại: ${phone}\n🏠 Địa chỉ: ${address}\n💳 Thanh toán: ${method}\n--------\n🛒 Sản phẩm:\n${detail}--------\n💰 Tiền hàng: ${subtotal.toLocaleString()}đ\n🚚 Phí ship: ${shipFee === 0 ? 'FREE' : '30.000đ'}\n🔥 TỔNG CỘNG: ${total.toLocaleString()}đ\n📝 Ghi chú: Khách được kiểm hàng trước khi thanh toán.`;
+    window.location.href = `https://zalo.me/0367974619?text=${encodeURIComponent(msg)}`;
+}
+</script>
+</body>
+</html>
